@@ -216,6 +216,19 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		callback.invoke(stringip);
 	}
 
+	//This method will clear the list of the android's remembered wifi's that are added by this library.
+	@ReactMethod
+	public void clearWifiList(final Callback callback) {
+		List<WifiConfiguration> wifiList = wifi.getConfiguredNetworks();
+
+		if (wifiList != null) {
+			for (WifiConfiguration wifiConfig : wifiList) {
+			    wifi.removeNetwork(wifiConfig.networkId);
+			}
+		}
+		callback.invoke();
+	}
+
 	public static String longToIP(int longIp){
 		StringBuffer sb = new StringBuffer("");
 		String[] strip=new String[4];
