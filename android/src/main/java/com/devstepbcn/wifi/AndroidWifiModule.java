@@ -397,14 +397,14 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 					JSONObject wifiObject = new JSONObject();
 					if(!result.SSID.equals("")){
 						try {
-				wifiObject.put("SSID", result.SSID);
-				wifiObject.put("BSSID", result.BSSID);
-				wifiObject.put("capabilities", result.capabilities);
-				wifiObject.put("frequency", result.frequency);
-				wifiObject.put("level", result.level);
-				wifiObject.put("timestamp", result.timestamp);
+							wifiObject.put("SSID", result.SSID);
+							wifiObject.put("BSSID", result.BSSID);
+							wifiObject.put("capabilities", result.capabilities);
+							wifiObject.put("frequency", result.frequency);
+							wifiObject.put("level", result.level);
+							wifiObject.put("timestamp", result.timestamp);
 						} catch (JSONException e) {
-				this.errorCallback.invoke(e.getMessage());
+							this.errorCallback.invoke(e.getMessage());
 							return;
 						}
 						wifiArray.put(wifiObject);
