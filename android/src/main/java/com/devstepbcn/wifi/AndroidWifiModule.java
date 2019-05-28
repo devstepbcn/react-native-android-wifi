@@ -46,7 +46,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	public AndroidWifiModule(ReactApplicationContext reactContext) {
 		super(reactContext);
 
-		wifi = (WifiManager)reactContext.getSystemService(Context.WIFI_SERVICE);
+		wifi = (WifiManager)reactContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		this.reactContext = reactContext;
 	}
 
