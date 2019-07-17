@@ -46,7 +46,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	public AndroidWifiModule(ReactApplicationContext reactContext) {
 		super(reactContext);
 
-		wifi = (WifiManager)reactContext.getSystemService(Context.WIFI_SERVICE);
+		wifi = (WifiManager)reactContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		this.reactContext = reactContext;
 	}
 
@@ -101,20 +101,17 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	//and remember to disable it when disconnecting from device.
 	@ReactMethod
 	public void forceWifiUsage(boolean useWifi) {
-        boolean canWriteFlag = false;
-		
+		boolean canWriteFlag = false;
+				
         if (useWifi) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     canWriteFlag = true;
                     // Only need ACTION_MANAGE_WRITE_SETTINGS on 6.0.0, regular permissions suffice on later versions
-                } else if (Build.VERSION.RELEASE.toString().equals("6.0.1")) {
-                    canWriteFlag = true;
-                    // Don't need ACTION_MANAGE_WRITE_SETTINGS on 6.0.1, if we can positively identify it treat like 7+
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    // On M 6.0.0 (N+ or higher and 6.0.1 hit above), we need ACTION_MANAGE_WRITE_SETTINGS to forceWifi.
                     canWriteFlag = Settings.System.canWrite(reactContext);
+
                     if (!canWriteFlag) {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
                         intent.setData(Uri.parse("package:" + reactContext.getPackageName()));
@@ -139,14 +136,16 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 manager.bindProcessToNetwork(network);
                             } else {
-                                //This method was deprecated in API level 23
-                                ConnectivityManager.setProcessDefaultNetwork(network);
+								//This method was deprecated in API level 23
+								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+									ConnectivityManager.setProcessDefaultNetwork(network);
+								}
                             }
                             try {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            manager.unregisterNetworkCallback(this);
+                          //  manager.unregisterNetworkCallback(this);
                         }
                     });
                 }
@@ -166,12 +165,16 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void connectionStatusOfBoundNetwork(Callback connectionStatusResult) {
 		ConnectivityManager connManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-		Network network = connManager.getBoundNetworkForProcess();
+		Network network = null;
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+			network = connManager.getBoundNetworkForProcess();
+		}
 		if (network != null) {
 			connectionStatusResult.invoke(true);
 		} else {
 			connectionStatusResult.invoke(false);
-		}
+		
+		} 
 	}
 
 	//Method to check if wifi is enabled
