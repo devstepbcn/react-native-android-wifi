@@ -8,6 +8,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import android.provider.Settings;
@@ -36,11 +37,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@ReactModule(name = AndroidWifiModule.MODULE_NAME)
 public class AndroidWifiModule extends ReactContextBaseJavaModule {
 
 	//WifiManager Instance
 	WifiManager wifi;
 	ReactApplicationContext reactContext;
+
+	static final String MODULE_NAME = "AndroidWifiModule";
 
 	//Constructor
 	public AndroidWifiModule(ReactApplicationContext reactContext) {
@@ -53,7 +57,7 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 	//Name for module register to use:
 	@Override
 	public String getName() {
-		return "AndroidWifiModule";
+		return this.MODULE_NAME;
 	}
 
 	//Method to load wifi list into string via Callback. Returns a stringified JSONArray
