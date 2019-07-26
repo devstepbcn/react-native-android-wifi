@@ -1,4 +1,4 @@
-export interface wifi {
+declare const wifi: {
     isEnabled: () => void;
     setEnabled: () => void;
     findAndConnect: () => void;
@@ -17,3 +17,5 @@ export interface wifi {
     connectionStatusOfBoundNetwork: () => void;
     connectToHiddenNetwork: () => void;
 }
+
+export default wifi;
