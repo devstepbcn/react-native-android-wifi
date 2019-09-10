@@ -36,6 +36,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.facebook.react.bridge.Promise;
+
 public class AndroidWifiModule extends ReactContextBaseJavaModule {
 
 	//WifiManager Instance
@@ -89,6 +91,20 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		} catch (IllegalViewOperationException e) {
 			errorCallback.invoke(e.getMessage());
 		}
+	}
+
+	//Returns a promise that resolves a boolean of wether or not the canWrite
+	//permission has been granted
+	@ReactMethod
+	public void checkCanWrite(Promise promise) {
+		boolean canWrite = true;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N || Build.VERSION.RELEASE.toString().equals("6.0.1")) {
+			// In versions >= 6.0.1, we no longer need to request permission to write to settings.
+		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			// In version 6.0.0, we need to request permission to write to settings in order to forceWifi.
+			canWrite = Settings.System.canWrite(reactContext);
+		}
+		promise.resolve(canWrite);
 	}
 
 	//Method to force wifi usage if the user needs to send requests via wifi
