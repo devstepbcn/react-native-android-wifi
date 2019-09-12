@@ -131,17 +131,19 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
                     manager.requestNetwork(builder.build(), new ConnectivityManager.NetworkCallback() {
                         @Override
                         public void onAvailable(Network network) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                manager.bindProcessToNetwork(network);
-                            } else {
-                                //This method was deprecated in API level 23
-                                ConnectivityManager.setProcessDefaultNetwork(network);
-                            }
                             try {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    manager.bindProcessToNetwork(network);
+                                } else {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        //This method was deprecated in API level 23
+                                        ConnectivityManager.setProcessDefaultNetwork(network);
+                                    }
+                                }
+                                manager.unregisterNetworkCallback(this);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            manager.unregisterNetworkCallback(this);
                         }
                     });
                 }
