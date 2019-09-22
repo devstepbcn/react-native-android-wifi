@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import java.util.List;
 import java.lang.Thread;
+import java.lang.reflect.Method;
 import android.net.DhcpInfo;
 
 import org.json.JSONArray;
@@ -475,6 +476,33 @@ public class AndroidWifiModule extends ReactContextBaseJavaModule {
 		String ip = longToIP(dhcpInfo.serverAddress);
 		callback.invoke(ip);
 	}
+
+    private boolean _isApOn() {
+        try {
+            if (this.canwriteFlag) {
+                Method method = wifi.getClass().getDeclaredMethod("isWifiApEnabled");
+                method.setAccessible(true);
+                return (Boolean) method.invoke(wifi);
+            } else {
+                this.forceWifiUsage(true);
+                this._isApOn()
+            }
+        } catch (Throwable e) {
+            return false;
+        }
+    }
+
+    @ReactMethod
+    public void isApOn(Callback successCallback, Callback errorCallback) {
+        try {
+            Method method = wifi.getClass().getDeclaredMethod("isWifiApEnabled");
+            method.setAccessible(true);
+            successCallback.invoke(_isApOn());
+
+        } catch (Throwable e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
 
 	public static String longToIP(int longIp){
 		StringBuffer sb = new StringBuffer("");
