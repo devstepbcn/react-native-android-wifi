@@ -49,7 +49,10 @@ export default class App extends Component<Props> {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           'title': 'Wifi networks',
-          'message': 'We need your permission in order to find wifi networks'
+          'message': 'We need your permission in order to find wifi networks',
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
         }
       )
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
